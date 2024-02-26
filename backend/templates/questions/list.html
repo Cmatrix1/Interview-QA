@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Questions and Answers{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Interview Questions and Answers</h1>
+<div class="row">
+    {% for question in questions %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ question.question }}</h5>
+                    <p class="card-text">{{ question.answer }}</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Created At: {{ question.created_at }}</li>
+                        <li class="list-group-item">Tags: 
+                            {% for tag in question.tags %}
+                                <span class="badge bg-primary">{{ tag }}</span>
+                            {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
