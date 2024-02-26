@@ -1,2 +1,6 @@
 /training
 .venv
+db/models/__pycache__/
+alembic/versions/__pycache__/
+__pycache__/
+db/__pycache__/
