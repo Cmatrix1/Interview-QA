@@ -6,6 +6,8 @@
     <title>{% block title %}Q&A Website{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
 </head>
 <body>
 {% include 'includes/navbar.html' %}
@@ -13,7 +15,9 @@
 <div class="container mt-4">
     {% block content %}{% endblock %}
 </div>
-
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>
