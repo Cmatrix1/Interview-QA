@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Questions and Answers{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-3">Create a New Question</h1>
+    <form method="post">
+        <div class="col-md-12">
+            <div class="mb-3">
+                <label for="question_text" class="form-label">Question Text</label>
+                <textarea class="form-control" id="question_text" name="question_text">{{question.question_text}}</textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="mb-3">
+                <label for="answer" class="form-label">Answer</label>
+                <textarea class="form-control" id="answer" name="answer">{{question.answer}}</textarea>
+            </div>
+        </div>
+
+        <div class="row col-md-12">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="levelSelect">Level</label>
+                    <select name="level" class="form-control" id="levelSelect">
+                      <option value="{{question.level}}" selected>{{question.level | title}}</option>
+                      <option value="junior">Junior</option>
+                      <option value="midlevel">Midlevel</option>
+                      <option value="senior">Senior</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="tagsSelect">Tags</label>
+                <select name="tags" multiple class="form-control" id="tagsSelect">
+                    <option value="Python">Python</option>
+                    <option value="Database">Database</option>
+                </select>
+                <button style="width: 100%;" type="button" class="btn btn-info mt-2" onclick="addNewTag()">+ Add Tag</button>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="referencesSelect">References</label>
+                <select name="references" multiple class="form-control" id="referencesSelect">
+                    <option value="Python.org">Python.org</option>
+                    <option value="Database.org">Database.org</option>
+                </select>
+                <button style="width: 100%;" type="button" class="btn btn-info mt-2" onclick="addNewReference()">+ Add Reference</button>
+            </div>
+        </div>
+
+        <button type="submit" class="mb-5 col-md-4 btn btn-primary" style="margin: auto;">Submit</button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    CKEDITOR.replace('answer');
+
+    function addNewTag() {
+        var tag = prompt("Enter the new tag:");
+        if (tag) {
+            var selectTag = document.getElementById('tagsSelect');
+            var option = document.createElement("option");
+            option.text = tag;
+            option.value = tag;
+            selectTag.add(option);
+        }
+    }
+
+    function addNewReference() {
+        var reference = prompt("Enter the new reference:");
+        if (reference) {
+            var selectReference = document.getElementById('referencesSelect');
+            var option = document.createElement("option");
+            option.text = reference;
+            option.value = reference;
+            selectReference.add(option);
+        }
+    }
+</script>
+{% endblock scripts %}

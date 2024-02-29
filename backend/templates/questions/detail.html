@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Questions and Answers{% endblock %}
+
+{% block content %}
+
+<main class="container">
+  <div class="p-4 p-md-5 mb-4 text-white rounded bg-dark">
+      <div class="col-md-12 px-0" style="position: relative;">
+          <h1 class="display-5 fst-italic" id="question_text">{{question.question_text}}</h1>
+          
+          <a href="https://www.google.com/search?q={{question.question_text}}" target="_blank" style="position: absolute; top: -35px; right: -35px;">
+              <button class="btn btn-info btn-sm">Google Search</button>
+          </a>
+      </div>
+  </div>
+
+  <div class="row g-5">
+      <div class="col-md-8" id="question_answer">
+          <article class="blog-post">
+              <blockquote class="blockquote">
+                  <p>{{question.answer|safe}}</p> 
+              </blockquote>
+          </article>
+          <hr>
+      </div>
+
+      <div class="col-md-4">
+          <div class="position-sticky" style="top: 2rem;">
+              <nav class="blog-pagination" aria-label="Pagination">
+                  <button class="btn btn-success btn-lg btn-block" id="read_question">Read Question and Answer</button>
+                  {% if question.next_question_id %}
+                      <a href="{{ url_for('question_detail', id=question.next_question_id)}}" class="btn btn-primary btn-lg btn-block">Next</a>
+                  {% endif %}
+                  {% if question.prev_question_id %}
+                      <a href="{{ url_for('question_detail', id=question.prev_question_id)}}" class="btn btn-secondary btn-lg btn-block" href="#">Previous</a>
+                  {% endif %}
+              </nav>
+          </div>
+      </div>
+  </div>
+</main>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+var btn = document.getElementById('read_question')
+btn.addEventListener('click', function(){
+  var question_text = document.getElementById("question_text").textContent 
+  var question_answer = document.getElementById("question_answer").textContent
+  var msg = new SpeechSynthesisUtterance();
+  msg.text = question_text;
+  window.speechSynthesis.speak(msg);
+  msg.text = question_answer;
+  window.speechSynthesis.speak(msg);
+})
+</script>
+{% endblock scripts %}
