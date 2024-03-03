@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+ 
+{% if errors %}
+    {% for key, value in errors.items() %}
+    <div class="alert alert-danger">
+        <li>{{key}}: {{value}}</li>
+    </div>
+    {% endfor %}
+{% endif %}
+<div class="container">
+    <div class="text-center display-4">Register</div>
+    <div class="row mt-3 mb-5">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <form method="POST" style="display: flex;flex-direction: column;">
+                <label>Username</label>
+                <input type="text" required  class="form-control mb-2" name="username" value="{{username}}" placeholder="Enter your Username">
+    
+                <label>Password</label>
+                <input type="password" required placeholder="Choose a secure password" value="{{password}}" name="password" class="form-control mb-2">
+    
+                <button type="submit" class="btn btn-primary mt-3">Create an Account</button>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+
+{% endblock %}
