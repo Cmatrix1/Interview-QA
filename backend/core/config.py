@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     SECRET_KEY: str
     
+    COOKIE_NAME: str = "access_token"
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 120
+    
     @property
     def DATABASE_URL(self): 
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"

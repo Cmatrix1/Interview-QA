@@ -1,4 +1,4 @@
-from apps import route_questions
+from apps import route_questions, route_auth
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -14,4 +14,8 @@ def main_page(request: Request):
 
 app_router.include_router(
     route_questions.router, prefix="/question", tags=["questions"], include_in_schema=False
+)
+
+app_router.include_router(
+    route_auth.router, prefix="/auth", tags=["auth"], include_in_schema=False
 )
