@@ -18,3 +18,12 @@ class DetailQuestion(BaseModel):
     next_question_id: int | None = None
     prev_question_id: int | None = None
 
+
+class CreateQuestion(BaseModel):
+    id: int
+    question_text: str
+    answer: str
+    level: str
+    tags: List[Tag] = []
+    references: List[Reference] = []
+
