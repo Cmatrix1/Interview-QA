@@ -2,7 +2,7 @@ from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from fastapi.requests import Request
 from fastapi import status
 from fastapi.security import OAuth2, utils
-from fastapi.exceptions import HTTPException
+from utils.exceptions.auth import NotAuthenticatedException
 from typing import Optional, Dict
 from core.config import settings
 
@@ -31,11 +31,7 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
         scheme, param = utils.get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != "bearer":
             if self.auto_error:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Not authenticated",
-                    headers={"WWW-Authenticate": "Bearer"},
-                )
+                raise NotAuthenticatedException()
             else:
                 return None
         return param
