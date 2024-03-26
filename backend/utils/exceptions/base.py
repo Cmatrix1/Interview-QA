@@ -1,9 +1,7 @@
+from fastapi.exceptions import HTTPException
 
 
-class AppBaseException(Exception):
-    def __init__(self, message: str = None):
-        if getattr(self, 'message', None) is None :
-            if message is not None:
-                self.message = message
-            else:
-                raise ValueError('The AppBaseException must have a message attribute.')
+class AppBaseException(HTTPException):
+    def __init__(self, *args, **kwargs):
+        if not getattr(self, 'detail', None):
+            super(AppBaseException, self).__init__(*args, **kwargs)
