@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import List
 
 class Tag(BaseModel):
     ...
@@ -12,18 +11,25 @@ class DetailQuestion(BaseModel):
     question_text: str
     answer: str
     level: str
-    tags: List[Tag] = []
-    references: List[Reference] = []
+    tags: list[str] = []
+    references: list[str] = []
     
     next_question_id: int | None = None
     prev_question_id: int | None = None
 
 
 class CreateQuestion(BaseModel):
-    id: int
     question_text: str
     answer: str
     level: str
-    tags: List[Tag] = []
-    references: List[Reference] = []
+    tags: list[str] = []
+    references: list[str] = []
 
+
+class UpdateQuestion(BaseModel):
+    id: int 
+    question_text: str
+    answer: str
+    level: str
+    tags: list[str] = []
+    references: list[str] = []
