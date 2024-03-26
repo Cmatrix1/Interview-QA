@@ -55,3 +55,8 @@ def update_question_service(question: UpdateQuestion, db: Session) -> Question:
         db=db,
     )
     return question_object
+
+
+def delete_question_service(question_id: int, db: Session):
+    return questions.delete_question(question_id, db)
+    

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Form, Depends, status
-from fastapi.exceptions import HTTPException 
+from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -9,7 +9,11 @@ from dependencies.user import get_current_user_from_token, get_current_user_from
 from db.models.user import User
 from schemas.question import CreateQuestion, UpdateQuestion
 from dependencies.questions import validate_question_id
-from services.question import create_question_service, update_question_service
+from services.question import (
+    create_question_service,
+    update_question_service,
+    delete_question_service,
+)
 from utils.exceptions.questions import QuestionNotFoundException
 
 
@@ -18,19 +22,33 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/", response_class=HTMLResponse)
-def question_list(request: Request, db: Session = Depends(get_db), user: User = Depends(get_current_user_from_cookie)):
+def question_list(
+    request: Request,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user_from_cookie),
+):
     questions = list_questions(db=db)
     return templates.TemplateResponse(
-        "questions/list.html", {"request": request, "questions": questions, "user":user}
+        "questions/list.html",
+        {"request": request, "questions": questions, "user": user},
     )
 
 
-@router.get("/detail/{id}", response_class=HTMLResponse)
-def question_detail(request: Request, id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user_from_cookie)):
-    question = detail_questions(id=id, db=db)
-    return templates.TemplateResponse(
-        "questions/detail.html", {"request": request, "question": question}
-    )
+@router.get("/detail/{id}")
+def question_detail(
+    request: Request,
+    id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user_from_cookie),
+):
+    try:
+        question = detail_questions(id=id, db=db)
+        return templates.TemplateResponse(
+            "questions/detail.html",
+            {"request": request, "question": question, "user": user},
+        )
+    except QuestionNotFoundException as exp:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @router.get("/create", response_class=HTMLResponse)
@@ -51,12 +69,18 @@ def question_create(
     references: list[str] = Form(...),
     user: User = Depends(get_current_user_from_token),
 ):
-    question = CreateQuestion(question_text=question_text, answer=answer, level=level, tags=tags, references=references)
+    question = CreateQuestion(
+        question_text=question_text,
+        answer=answer,
+        level=level,
+        tags=tags,
+        references=references,
+    )
     question_object = create_question_service(question=question, db=db)
     return RedirectResponse(
-        url=request.url_for('question_detail', id=question_object.id), 
-        status_code=status.HTTP_303_SEE_OTHER
-        )
+        url=request.url_for("question_detail", id=question_object.id),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
 
 
 @router.get("/update/{question_id}", response_class=HTMLResponse)
@@ -82,16 +106,36 @@ def question_update(
     level: str = Form(...),
     tags: list[str] = Form(...),
     references: list[str] = Form(...),
-    user: User = Depends(get_current_user_from_token), # TODO: check user is admin with depends
+    user: User = Depends(
+        get_current_user_from_token
+    ),  # TODO: check user is admin with depends
 ):
-    question = UpdateQuestion(id=question_id, question_text=question_text, answer=answer, level=level, tags=tags, references=references)
+    question = UpdateQuestion(
+        id=question_id,
+        question_text=question_text,
+        answer=answer,
+        level=level,
+        tags=tags,
+        references=references,
+    )
 
     try:
         question_object = update_question_service(question=question, db=db)
     except QuestionNotFoundException as exp:
         raise HTTPException(status_code=404, detail=str(exp))
-    
+
     return RedirectResponse(
-        url=request.url_for('question_detail', id=question_object.id), 
-        status_code=status.HTTP_303_SEE_OTHER
+        url=request.url_for("question_detail", id=question_object.id),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.get("/delete/{question_id}")
+def question_delete(request: Request, question_id: int, db: Session = Depends(get_db)):
+    try:
+        delete_question_service(question_id, db)
+        return RedirectResponse(
+            url=request.url_for("question_list"), status_code=status.HTTP_303_SEE_OTHER
         )
+    except QuestionNotFoundException as exp:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exp))

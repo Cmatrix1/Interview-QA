@@ -29,11 +29,12 @@ def detail_questions(id: int, db: Session) -> DetailQuestion:
     prev_question_subquery = db.query(Question.id).order_by(
         Question.id.desc()).filter(Question.id < id).limit(1).scalar()
 
-    question, next_question, prev_question = db.query(
+    result = db.query(
         Question, next_question_subquery, prev_question_subquery
     ).filter(Question.id == id).first()
 
-    if question:
+    if result:
+        question, next_question, prev_question = result
         return DetailQuestion(
             **question.as_dict(),
             next_question_id=next_question,
@@ -72,3 +73,10 @@ def update_question(question_id: int, question_text: str, answer: str, level: st
 
     db.commit()
     return question_object
+
+
+def delete_question(question_id: int, db: Session):
+    status = db.query(Question).filter(Question.id == question_id).delete()
+    db.commit()
+    if not status:
+        raise QuestionNotFoundException(f"Question with ID {question_id} Not Found")

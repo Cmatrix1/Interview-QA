@@ -35,7 +35,11 @@
                   {% if question.prev_question_id %}
                       <a href="{{ url_for('question_detail', id=question.prev_question_id)}}" class="btn btn-secondary btn-lg btn-block" href="#">Previous</a>
                   {% endif %}
-              </nav>
+                  {% if user %}
+                    <a href="{{ url_for('question_update', question_id=question.id)}}" class="btn btn-info btn-lg btn-block" href="#">Update</a>
+                    <a href="{{ url_for('question_delete', question_id=question.id)}}" class="btn btn-danger btn-lg btn-block" href="#">Delete</a>
+                  {% endif %}
+            </nav>
           </div>
       </div>
   </div>
